@@ -1,26 +1,27 @@
-import { NativeModulesProxy, EventEmitter, Subscription } from 'expo-modules-core';
-
 // Import the native module. On web, it will be resolved to ExpoCoreml.web.ts
 // and on native platforms to ExpoCoreml.ts
 import ExpoCoremlModule from './ExpoCoremlModule';
-import ExpoCoremlView from './ExpoCoremlView';
-import { ChangeEventPayload, ExpoCoremlViewProps } from './ExpoCoreml.types';
+
+export interface RecognizedObject{
+  confidence: number,
+  label: string,
+  boundingBox: {
+    x: number,
+    y: number,
+    width: number,
+    height: number
+  }
+}
 
 // Get the native constant value.
-export const PI = ExpoCoremlModule.PI;
-
 export function hello(): string {
   return ExpoCoremlModule.hello();
 }
 
-export async function setValueAsync(value: string) {
-  return await ExpoCoremlModule.setValueAsync(value);
+export async function compileModel(url: string) {
+  return await ExpoCoremlModule.compileModel(url);
 }
 
-const emitter = new EventEmitter(ExpoCoremlModule ?? NativeModulesProxy.ExpoCoreml);
-
-export function addChangeListener(listener: (event: ChangeEventPayload) => void): Subscription {
-  return emitter.addListener<ChangeEventPayload>('onChange', listener);
+export async function predict(modelURL: string, imageURL: string): Promise<RecognizedObject[]> {
+  return await ExpoCoremlModule.predict(modelURL, imageURL);
 }
-
-export { ExpoCoremlView, ExpoCoremlViewProps, ChangeEventPayload };
