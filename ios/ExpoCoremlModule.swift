@@ -1,44 +1,58 @@
 import ExpoModulesCore
+import CoreML
+import Vision
 
 public class ExpoCoremlModule: Module {
-  // Each module class must implement the definition function. The definition consists of components
-  // that describes the module's functionality and behavior.
-  // See https://docs.expo.dev/modules/module-api for more details about available components.
-  public func definition() -> ModuleDefinition {
-    // Sets the name of the module that JavaScript code will use to refer to the module. Takes a string as an argument.
-    // Can be inferred from module's class name, but it's recommended to set it explicitly for clarity.
-    // The module will be accessible from `requireNativeModule('ExpoCoreml')` in JavaScript.
-    Name("ExpoCoreml")
+    // Each module class must implement the definition function. The definition consists of components
+    // that describes the module's functionality and behavior.
+    // See https://docs.expo.dev/modules/module-api for more details about available components.
+    public func definition() -> ModuleDefinition {
+        Name("ExpoCoreml")
+        
+        // Defines a JavaScript synchronous function that runs the native code on the JavaScript thread.
+        Function("hello") {
+            return "Hello world! 👋"
+        }
+        
+        
+        AsyncFunction("compileModel") { (url: URL, promise: Promise) in
+            
+            do {
+                let compiledModelURL = try MLModel.compileModel(at: url)
+                promise.resolve(compiledModelURL.absoluteString)
+            } catch {
+                promise.resolve(NSNull())
+            }
+            
+        }
+        
+        
+        AsyncFunction("predict") { (modelURL: URL, imageURL: URL, promise: Promise) in
+            
+            do {
+                let model = try MLModel(contentsOf: modelURL)
+                let visionModel = try VNCoreMLModel(for: model)
+                
+                let request = VNCoreMLRequest(model: visionModel) { (request, error) in
+                    if let error = error {
+                        promise.resolve(NSNull())
+                        return
+                    }
+                    
+                    guard let results = request.results as? [VNClassificationObservation] else {
+                        promise.resolve(NSNull())
+                        return
+                    }
 
-    // Sets constant properties on the module. Can take a dictionary or a closure that returns a dictionary.
-    Constants([
-      "PI": Double.pi
-    ])
-
-    // Defines event names that the module can send to JavaScript.
-    Events("onChange")
-
-    // Defines a JavaScript synchronous function that runs the native code on the JavaScript thread.
-    Function("hello") {
-      return "Hello world! 👋"
+                    promise.resolve(results)
+                }
+                
+                let handler = VNImageRequestHandler(url: imageURL, options: [:])
+                try handler.perform([request])
+            } catch {
+                promise.resolve(NSNull())
+            }
+            
+        }
     }
-
-    // Defines a JavaScript function that always returns a Promise and whose native code
-    // is by default dispatched on the different thread than the JavaScript runtime runs on.
-    AsyncFunction("setValueAsync") { (value: String) in
-      // Send an event to JavaScript.
-      self.sendEvent("onChange", [
-        "value": value
-      ])
-    }
-
-    // Enables the module to be used as a native view. Definition components that are accepted as part of the
-    // view definition: Prop, Events.
-    View(ExpoCoremlView.self) {
-      // Defines a setter for the `name` prop.
-      Prop("name") { (view: ExpoCoremlView, prop: String) in
-        print(prop)
-      }
-    }
-  }
 }
