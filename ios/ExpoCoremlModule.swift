@@ -1,4 +1,5 @@
 import ExpoModulesCore
+import Foundation
 import CoreML
 import Vision
 
@@ -15,10 +16,11 @@ public class ExpoCoremlModule: Module {
         }
         
         
-        AsyncFunction("compileModel") { (url: URL, promise: Promise) in
+        AsyncFunction("compileModel") { (modelURL: URL, promise: Promise) in
             
+//                let modelURL = URL(fileURLWithPath: url)
             do {
-                let compiledModelURL = try MLModel.compileModel(at: url)
+                let compiledModelURL = try MLModel.compileModel(at: modelURL)
                 promise.resolve(compiledModelURL.absoluteString)
             } catch {
                 promise.resolve(NSNull())
@@ -30,27 +32,41 @@ public class ExpoCoremlModule: Module {
         AsyncFunction("predict") { (modelURL: URL, imageURL: URL, promise: Promise) in
             
             do {
+                
                 let model = try MLModel(contentsOf: modelURL)
                 let visionModel = try VNCoreMLModel(for: model)
+                let image = CIImage(contentsOf: imageURL)
                 
                 let request = VNCoreMLRequest(model: visionModel) { (request, error) in
                     if let error = error {
                         promise.resolve(NSNull())
-                        return
+                      return
                     }
                     
-                    guard let results = request.results as? [VNClassificationObservation] else {
+                    guard let results = request.results as? [VNRecognizedObjectObservation] else {
                         promise.resolve(NSNull())
-                        return
+                      return
                     }
 
-                    promise.resolve(results)
-                }
+                    let predictionResults = results.map { [
+                        "confidence": $0.confidence,
+                        "label": $0.labels.first?.identifier ?? "",
+                        "boundingBox": [
+                            "x": $0.boundingBox.origin.x,
+                            "y": $0.boundingBox.origin.y,
+                            "width": $0.boundingBox.size.width,
+                            "height": $0.boundingBox.size.height
+                        ],
+                    ] }
+                    promise.resolve(predictionResults)
+                    
+              }
                 
-                let handler = VNImageRequestHandler(url: imageURL, options: [:])
-                try handler.perform([request])
+                let handler = VNImageRequestHandler(ciImage: image!);
+                try handler.perform([request]);
+              
             } catch {
-                promise.resolve(NSNull())
+                promise.resolve("Failed to load the model")
             }
             
         }
