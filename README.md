@@ -48,7 +48,7 @@ export default function MyCompnent(){
                         ...item,
                         boundingBox: {
                             x: item?.boundingBox?.x * image.width,
-                            y: item?.boundingBox?.y * image.height,
+                            y: (1 - (item?.boundingBox?.y + item?.boundingBox?.height)) * img.height,
                             width: item?.boundingBox?.width * image.width,
                             height: item?.boundingBox?.height * image.height
                         }
