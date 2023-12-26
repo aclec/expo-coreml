@@ -1,6 +1,6 @@
 {
   "name": "expo-coreml",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Use CoreML model with react native & expo",
   "main": "build/index.js",
   "types": "build/index.d.ts",
@@ -31,7 +31,6 @@
   "dependencies": {},
   "devDependencies": {
     "@types/react": "^18.0.25",
-    "@types/react-native": "^0.70.6",
     "expo-module-scripts": "^3.0.4",
     "expo-modules-core": "^1.1.0"
   },

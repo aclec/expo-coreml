@@ -1,8 +1,11 @@
 # expo-coreml
 
+---
 - Use Hermes Engine
 - Create custom expo dev build to use in development
-- Only Object Detection (VNRecognizedObjectObservation) for the moment
+---
+- Object Detection (VNRecognizedObjectObservation)
+- Classify Object (VNClassificationObservation)
 
 
 ## Installation
@@ -30,6 +33,7 @@ export default function MyCompnent(){
         }
     }
 
+    // Detection
     const handlePredict = async () => {
 
         const images = await ImagePicker.launchImageLibraryAsync({
@@ -57,6 +61,26 @@ export default function MyCompnent(){
 
                 console.log(refactorSize);
                 console.log("Totals => ", refactorSize.length);
+
+            }
+        }
+    }
+    
+    // Classification
+    const handleClassify = async () => {
+
+        const images = await ImagePicker.launchImageLibraryAsync({
+            quality: 1
+        });
+        if(!!images.assets){
+            for (const image of images.assets){
+                
+                const res = await ExpoCoreml.classify(
+                    FileSystem.documentDirectory + 'modelClassify.mlmodelc',
+                    image.uri,
+                );
+
+                console.log(res);
 
             }
         }

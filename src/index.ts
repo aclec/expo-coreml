@@ -13,6 +13,11 @@ export interface RecognizedObject{
   }
 }
 
+export interface ClassifyObject{
+  confidence: number,
+  label: string,
+}
+
 // Get the native constant value.
 export function hello(): string {
   return ExpoCoremlModule.hello();
@@ -24,4 +29,8 @@ export async function compileModel(url: string) {
 
 export async function predict(modelURL: string, imageURL: string): Promise<RecognizedObject[]> {
   return await ExpoCoremlModule.predict(modelURL, imageURL);
+}
+
+export async function classify(modelURL: string, imageURL: string): Promise<ClassifyObject[]> {
+  return await ExpoCoremlModule.classify(modelURL, imageURL);
 }
