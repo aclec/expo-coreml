@@ -19,7 +19,7 @@ export default function Classify() {
         console.log("Start Download Classify");
         try {
             await FileSystem.createDownloadResumable(
-                'http://localhost:3000/modelClassifyBrut.mlmodel',
+                'http://localhost:3000/modelClassify.mlmodel',
                 FileSystem.documentDirectory + 'modelClassify.mlmodel',
                 {}
             ).downloadAsync();

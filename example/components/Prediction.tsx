@@ -19,7 +19,7 @@ export default function Prediction() {
         console.log("Start Download Predictions");
         try {
             await FileSystem.createDownloadResumable(
-                'http://localhost:3000/modelPredictionBrut.mlmodel',
+                'http://localhost:3000/modelPrediction.mlmodel',
                 FileSystem.documentDirectory + 'modelPrediction.mlmodel',
                 {}
             ).downloadAsync();
