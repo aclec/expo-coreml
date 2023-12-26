@@ -2,6 +2,7 @@ import {Button, Text, View} from 'react-native';
 import * as ExpoCoreml from 'expo-coreml';
 import * as FileSystem from "expo-file-system";
 import * as ImagePicker from 'expo-image-picker';
+import Constants from "expo-constants";
 
 export default function Classify() {
 
@@ -18,8 +19,9 @@ export default function Classify() {
         if(info.exists) await FileSystem.deleteAsync(FileSystem.documentDirectory + 'modelClassify.mlmodel');
         console.log("Start Download Classify");
         try {
+            console.log(`http:${Constants.expoGoConfig?.logUrl?.split(":")?.[1]}:3000/modelClassify.mlmodel`)
             await FileSystem.createDownloadResumable(
-                'http://localhost:3000/modelClassify.mlmodel',
+                `http:${Constants.expoGoConfig?.logUrl?.split(":")?.[1]}:3000/modelClassify.mlmodel`,
                 FileSystem.documentDirectory + 'modelClassify.mlmodel',
                 {}
             ).downloadAsync();
