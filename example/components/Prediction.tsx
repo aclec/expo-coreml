@@ -16,7 +16,7 @@ export default function Prediction() {
     const downLoadModel = async () => {
         const info = await FileSystem.getInfoAsync(FileSystem.documentDirectory + 'modelPrediction.mlmodel');
         if(info.exists) await FileSystem.deleteAsync(FileSystem.documentDirectory + 'modelPrediction.mlmodel');
-        console.log("Start Download");
+        console.log("Start Download Predictions");
         try {
             await FileSystem.createDownloadResumable(
                 'http://localhost:3000/modelPredictionBrut.mlmodel',
@@ -27,11 +27,11 @@ export default function Prediction() {
         }catch (e) {
             console.log(e)
         }
-        console.log("End Download");
+        console.log("End Download Predictions");
     }
 
     const compileModel = async () => {
-        console.log("Start Compile");
+        console.log("Start Compile Predictions");
         const url = await ExpoCoreml.compileModel(FileSystem.documentDirectory + 'modelPrediction.mlmodel');
         if(!!url){
             const info = await FileSystem.getInfoAsync(FileSystem.documentDirectory + 'modelPrediction.mlmodelc');
@@ -40,7 +40,7 @@ export default function Prediction() {
             await FileSystem.deleteAsync(url);
             console.log( await FileSystem.readDirectoryAsync(FileSystem.documentDirectory as string))
         }
-        console.log("End Compile");
+        console.log("End Compile Predictions");
     }
 
 

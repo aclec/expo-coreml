@@ -67,6 +67,24 @@ export default function MyCompnent(){
     }
     
     // Classification
+    const handleClassify = async () => {
+
+        const images = await ImagePicker.launchImageLibraryAsync({
+            quality: 1
+        });
+        if(!!images.assets){
+            for (const image of images.assets){
+                
+                const res = await ExpoCoreml.classify(
+                    FileSystem.documentDirectory + 'modelClassify.mlmodelc',
+                    image.uri,
+                );
+
+                console.log(res);
+
+            }
+        }
+    }
 
     return (
         <View/>
