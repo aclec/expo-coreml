@@ -32,14 +32,14 @@ export default function Prediction() {
 
     const compileModel = async () => {
         console.log("Start Compile Predictions");
-        const url = await ExpoCoreml.compileModel(FileSystem.documentDirectory + 'modelPrediction.mlmodel');
+        // console.log(FileSystem.documentDirectory);
+        const url = await ExpoCoreml.compileModel(FileSystem.documentDirectory + 'modelPrediction.mlmodel', FileSystem.documentDirectory + 'modelPrediction.mlmodelc');
         if(!!url){
             const info = await FileSystem.getInfoAsync(FileSystem.documentDirectory + 'modelPrediction.mlmodelc');
             if(info.exists) await FileSystem.deleteAsync(FileSystem.documentDirectory + 'modelPrediction.mlmodelc');
-            await FileSystem.copyAsync({from: url, to: FileSystem.documentDirectory + 'modelPrediction.mlmodelc'});
-            await FileSystem.deleteAsync(url);
             console.log( await FileSystem.readDirectoryAsync(FileSystem.documentDirectory as string))
         }
+        console.log( await FileSystem.readDirectoryAsync(FileSystem.documentDirectory as string))
         console.log("End Compile Predictions");
     }
 

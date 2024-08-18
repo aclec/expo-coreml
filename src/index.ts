@@ -23,8 +23,8 @@ export function hello(): string {
   return ExpoCoremlModule.hello();
 }
 
-export async function compileModel(url: string) {
-  return await ExpoCoremlModule.compileModel(url);
+export async function compileModel(url: string, destUrl: string) {
+  return await ExpoCoremlModule.compileModel(url, destUrl);
 }
 
 export async function predict(modelURL: string, imageURL: string): Promise<RecognizedObject[]> {

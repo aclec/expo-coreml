@@ -26,11 +26,11 @@ import * as ImagePicker from 'expo-image-picker';
 export default function MyCompnent(){
 
     const compileModel = async () => {
-        const compiledUrl = await ExpoCoreml.compileModel("fileURI of .mlmodel");
-        if(!!url){
-            await FileSystem.copyAsync({from: url, to: FileSystem.documentDirectory + 'myCompiledModel.mlmodelc'});
-            await FileSystem.deleteAsync(url);
-        }
+        const compiledUrl = await ExpoCoreml.compileModel("fileURI of .mlmodel", "fileURI of myCompiledModel.mlmodelc");
+        // if(!!url){
+        //     await FileSystem.copyAsync({from: url, to: FileSystem.documentDirectory + 'myCompiledModel.mlmodelc'});
+        //     await FileSystem.deleteAsync(url);
+        // }
     }
 
     // Detection

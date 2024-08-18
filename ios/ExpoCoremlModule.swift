@@ -16,12 +16,13 @@ public class ExpoCoremlModule: Module {
         }
         
         
-        AsyncFunction("compileModel") { (modelURL: URL, promise: Promise) in
+        AsyncFunction("compileModel") { (modelURL: URL, destinationURL: URL, promise: Promise) in
             
             //let modelURL = URL(fileURLWithPath: url)
             do {
                 let compiledModelURL = try MLModel.compileModel(at: modelURL)
-                promise.resolve(compiledModelURL.absoluteString)
+                try FileManager.default.moveItem(at: compiledModelURL, to: destinationURL)
+                promise.resolve(destinationURL.absoluteString)
             } catch {
                 promise.resolve(NSNull())
             }
